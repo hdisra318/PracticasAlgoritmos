@@ -21,6 +21,9 @@ public class Arista {
     public Arista(Vertice x, Vertice y){
         this.verticeOrigen = x;
         this.verticeDestino = y;
+
+        //Agregando a 'y' a la lista de vecinos del vertice 'x'
+        this.verticeOrigen.setVecino(y);
     }
 
     /**
