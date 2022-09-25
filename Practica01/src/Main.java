@@ -65,7 +65,11 @@ public class Main {
             sc.close();
 
         }catch(FileNotFoundException fnfe){
-            System.out.println("Error al leer el archivo: "+ fnfe.getMessage());
+            System.out.println("Error al leer el archivo");
+            System.exit(0);
+        }catch(Exception e){
+            System.out.println("Error, el archivo no está en el formato especificado");
+            System.exit(0);
         }
 
         return grafica;
