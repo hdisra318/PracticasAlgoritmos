@@ -15,7 +15,8 @@ public class Vertice {
     private ArrayList<Vertice> vecinos;
 
     /**
-     * Constructor del Vertice
+     * Constructor del Vertice.
+     * 
      * @param nombreVertice el nombre del vertice a crear.
      */
     public Vertice(String nombreVertice){
@@ -25,8 +26,9 @@ public class Vertice {
     }
 
     /**
-     * Regresa el nombre del vertice
-     * @return el nombre del vertice.
+     * Regresa el nombre del vertice.
+     * 
+     * @return el nombre del vertice
      */
     public String getNombreVertice(){
         return this.nombreVertice;
@@ -38,7 +40,25 @@ public class Vertice {
     }
 
     /**
+     * Regresa las representaciones de las conexiones del vertice 
+     * actual con sus vecinos.
+     * 
+     * @return representacion de las conexiones con sus vecinos
+     */
+    public String represetacionConexiones(){
+        String representacion = "";
+        //Iterando sobre los vecinos excepto consigo mismo
+        for (int i = 1; i<vecinos.size(); ++i) {
+            representacion += this + " --> " + vecinos.get(i);
+        }
+
+        return representacion;
+    }
+
+
+    /**
      * Regresa la lista de vecinos del vertice.
+     * 
      * @return la lista de vecinos del vertice
      */
     public ArrayList<Vertice> getVecinos(){
@@ -47,6 +67,7 @@ public class Vertice {
 
     /**
      * Agrega a la lista de vecinos el vertice dado.
+     * 
      * @param vecino el nuevo vecino del vertice
      */
     public void setVecino(Vertice vertice){
@@ -55,6 +76,7 @@ public class Vertice {
 
     /**
      * Regresa el grado del vertice.
+     * 
      * @return el grado del vertice
      */
     public int getGrado(){
@@ -62,7 +84,17 @@ public class Vertice {
     }
 
     /**
+     * Crea una arista hacia el vertice dado.
+     * 
+     * @param verticeDestino vertice al que llega la flecha
+     */
+    public void crearFlecha(Vertice verticeDestino){
+        this.setVecino(verticeDestino);
+    }
+
+    /**
      * Verifica si el vertice dado es vecino del vertice actual.
+     * 
      * @param vertice el vertice a verificar
      * @return si vertice es vecino del vertice actual
      */
@@ -75,4 +107,19 @@ public class Vertice {
 
         return false;
     }
+
+    /**
+     * Remueve el vecino dado de la vecindad.
+     * 
+     * @param v vertice a eliminar
+     */
+    public void eliminarVecino(Vertice v){
+
+        for(int i = 0; i<this.getGrado(); ++i){
+
+            if(this.vecinos.get(i).getNombreVertice().equals(v.getNombreVertice()))
+                this.vecinos.remove(i);
+        }
+    }
+
 }

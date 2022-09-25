@@ -11,16 +11,14 @@ public class Grafica {
     /** Lista de vertices de la grafica */
     ArrayList<Vertice> vertices = new ArrayList<>();
 
-    /** Lista de flechas de la grafica */
-    ArrayList<Arista> flechas = new ArrayList<>();
-
     /**
-     * Constructor de una grafica.
+     * Constructor vacio de una grafica.
      */
     public Grafica(){}
 
     /**
-     * Constructor de una grafica dado un vertice inicial
+     * Constructor de una grafica dado un vertice inicial.
+     * 
      * @param vertice el vertice inicial de la grafica
      */
     public Grafica(Vertice vertice){
@@ -28,7 +26,8 @@ public class Grafica {
     }
 
     /** 
-     * Agrega un vertice a la grafica
+     * Agrega un vertice a la grafica.
+     * 
      * @param vertice el nuevo vertice a agregar a la grafica
      */
     public void agregarVertice(Vertice vertice){
@@ -36,21 +35,23 @@ public class Grafica {
     }
 
     /**
-     * Agrega una flecha a la grafica
+     * Agrega una flecha a la grafica.
+     * 
      * @param verticeOrigen el vertice de donde sale la flecha
      * @param verticeDestino el vertice donde llega la flecha
      */
     public void agregarFlecha(Vertice verticeOrigen, Vertice verticeDestino){
 
         if(existeVertice(verticeOrigen) && existeVertice(verticeDestino)){
-            Arista flecha = new Arista(verticeOrigen, verticeDestino);
-            this.flechas.add(flecha);
+           
+            verticeOrigen.crearFlecha(verticeDestino);
         }
     }
 
 
     /**
-     * Verifica si existe el vertice dado en la grafica
+     * Verifica si existe el vertice dado en la grafica.
+     * 
      * @param vertice el vertice a verficar
      */
     private boolean existeVertice(Vertice vertice){
@@ -63,13 +64,31 @@ public class Grafica {
         return false;
     }
 
+
+    /**
+     * Regresa el vertice de la grafica dado su nombre.
+     * 
+     * @param nombre el nombre del vertice
+     * @return el vertice encontrado
+     */
+    public Vertice getVertice(String nombre){
+
+        Vertice v = null;
+        for (Vertice vertice : vertices) {
+            if(vertice.getNombreVertice().equals(nombre))
+                v = vertice;
+        }
+
+        return v;
+    }
+
     @Override
     public String toString(){
 
         String representacion = "";
 
-        for (Arista flecha : this.flechas) {
-            representacion += flecha + "\n";
+        for (Vertice vertice : vertices) {
+            representacion += vertice.represetacionConexiones() + "\n";
         }
 
 
@@ -78,8 +97,8 @@ public class Grafica {
 
 
     /**
-     * Funcion que regresa el Conjunto Independiente de G tal que vertice
-     * en la grafica puede ser alcanzado a partir del conjunto por una trayectoria
+     * Funcion que regresa el Conjunto Independiente de G tal que cualquier vertice
+     * en la grafica puede ser alcanzado a partir del conjunto por una trayectoria de
      * a lo mas 2.
      * 
      * @return el Conjunto Independiente formado
@@ -89,9 +108,8 @@ public class Grafica {
         // El Conjunto Independiente encontrado
         ArrayList<Vertice> conjIndep = new ArrayList<>();
 
-        Grafica g = this;
         // Llamada a la funcion auxiliar
-        return conjIndepTeorAux(conjIndep, g);
+        return conjIndepTeorAux(conjIndep);
     }
 
     /**
@@ -99,28 +117,24 @@ public class Grafica {
      * Conjunto Independiente que se busca.
      * 
      * @param conjIndep el conjunto independiente formado
-     * @param g la grafica actual
      * @return el conjunto independiente buscado
      */
-    public ArrayList<Vertice> conjIndepTeorAux(ArrayList<Vertice> conjIndep, Grafica g){
+    public ArrayList<Vertice> conjIndepTeorAux(ArrayList<Vertice> conjIndep){
 
         /* Casos Base */
-        if(g.vertices.size() == 1){
-            conjIndep.add(g.vertices.get(0));
+        if(this.vertices.size() == 1){
+            conjIndep.add(this.vertices.get(0));
             return conjIndep;
         }
 
-        if(g.vertices.size() == 2){
-            Vertice vertice0 = g.vertices.get(0);
-            Vertice vertice1 = g.vertices.get(1);
-            if(vertice0.esVecino(vertice1) && vertice1.esVecino(vertice0)){
+        if(this.vertices.size() == 2){
+            Vertice vertice0 = this.vertices.get(0);
+            Vertice vertice1 = this.vertices.get(1);
+            if(vertice0.esVecino(vertice1)){
                 //Solo agregamos un vertice al conjunto
                 conjIndep.add(vertice0);
 
-            }else if(vertice0.esVecino(vertice1)){
-                conjIndep.add(vertice0);
-
-            }else if(vertice1.esVecino(vertice0)){
+            }else if(vertice1.esVecino(vertice0)){ 
                 conjIndep.add(vertice1);
 
             }else{
@@ -132,26 +146,25 @@ public class Grafica {
             return conjIndep;
         }
 
-        if(g.vertices.size() == 3){
+        if(this.vertices.size() == 3){
 
             //Casos con 3 vertices
-            for(int i = 0; i<g.vertices.size(); ++i){
+            ArrayList<Vertice> conjIndepAux = new ArrayList<>();
+            conjIndepAux.add(this.vertices.get(0));//Inicialmente con el primer vertice
+            conjIndep = conjIndepAux;
+            for(int i = 0; i<this.vertices.size(); ++i){
                 
-                ArrayList<Vertice> conjIndepAux = new ArrayList<>();
-                int maxTamConj;
+                conjIndepAux = new ArrayList<>();
+                conjIndepAux.add(this.vertices.get(i));
 
-                conjIndepAux.add(g.vertices.get(i));
-                maxTamConj = 1;
-
-                for(int j = 0; j<g.vertices.size(); ++j){
+                for(int j = 0; j<this.vertices.size(); ++j){
                     //Si el conjunto es independiente agregando al vertice en la posicion j
-                    if(esIndependiente(conjIndepAux, g.vertices.get(j))){
-                        conjIndepAux.add(g.vertices.get(j));
+                    if(esIndependiente(conjIndepAux, this.vertices.get(j))){
+                        conjIndepAux.add(this.vertices.get(j));
                     }
                 }
 
-                if(maxTamConj < conjIndepAux.size()){
-                    maxTamConj = conjIndepAux.size();
+                if(mayorGrado(conjIndep,conjIndepAux)){
                     conjIndep = conjIndepAux;
                 }
                 
@@ -163,13 +176,23 @@ public class Grafica {
 
 
         /* Recursion */
-        //Agarrar a un vertice de g
-        Vertice v = g.vertices.get(g.vertices.size()-1);
+        //Agarrar a un vertice de la grafica (el ultimo registrado)
+        Vertice v = this.vertices.get(this.vertices.size()-1);
 
-        //Eliminar a los vecinos de v de g, incluyendolo
-        g.vertices.removeAll(v.getVecinos());
+        //Eliminar a los vecinos de v de la grafica, incluyendolo
+        this.vertices.removeAll(v.getVecinos());
 
-        conjIndep = conjIndepTeorAux(conjIndep, g);
+        //Eliminar a v y sus vecinos de los vecinos de los demas vertices
+        this.removerVecinosDeVertices(v);
+
+        //Llamada recursiva
+        conjIndep = conjIndepTeorAux(conjIndep);
+
+        //Agregar a v y sus vecinos despues de generar al conjunto indepenediente anterior
+        Grafica graficaOriginal = Main.creaGrafica();
+
+        //Agregar los vertices eliminados antes de la llamada recursiva
+        agregarVerticesEliminados(graficaOriginal, conjIndep, v);
 
         if(esIndependiente(conjIndep, v)){
             conjIndep.add(v);
@@ -178,9 +201,43 @@ public class Grafica {
         return conjIndep;
     }
 
+    /** 
+     * Verifica si la suma de los grados de los vertices del conjunto 
+     * independiente 's' es mayor que los de s2.
+     * 
+     * @param s conjunto independiente actual
+     * @param s2 conjunto independiente a verificar
+     * @return true si cumple, false en otro caso
+     */
+    public boolean mayorGrado(ArrayList<Vertice> s, ArrayList<Vertice> s2){
+
+        boolean mayor;
+
+        int gradoS1 = 0;
+        int gradoS2 = 0;
+
+        //Obteniendo grados de todos lo vertices del conjunto s
+        for(int i = 0; i<s.size(); ++i){
+            gradoS1 += s.get(i).getGrado();
+        }
+
+        //Obteniendo grados de todos lo vertices del conjunto s2
+        for(int i = 0; i<s2.size(); ++i){
+            gradoS2 += s2.get(i).getGrado();
+        }
+
+        if(gradoS1< gradoS2){
+            mayor = true;
+        }else{
+            mayor = false;
+        }
+
+        return mayor;
+    }
 
     /**
-     * Verfica si un conjunto es indipendiente si se agrega el vertice dado.
+     * Verfica si un conjunto es independiente si se agrega el vertice dado.
+     * 
      * @param S el conjunto independiente a verificar
      * @param vertice a verficar en la grafica
      * @return true si es el conjunto es independiente, false en otro caso
@@ -194,5 +251,69 @@ public class Grafica {
 
         return true;
     }
+
+    /**
+     * Remueve las aparciones de 'v' en las vecindades de los vertices
+     * de la grafica.
+     * 
+     * @param v vertice a verificar
+     */
+    private void removerVecinosDeVertices(Vertice v){
+        for(int i = 0; i<this.vertices.size(); ++i){
+            for(int j = 0; j<this.vertices.get(i).getGrado(); ++j){
+                for(int k = 0; k<v.getGrado(); ++k){
+                    if(this.vertices.get(i).getVecinos().get(j).getNombreVertice().equals(v.getVecinos().get(k).getNombreVertice())){
+                        this.vertices.get(i).eliminarVecino(v.getVecinos().get(k));
+                        j--;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Agrega las adyacencias que estaban con el vertice v.
+     * 
+     * @param g grafica anterior a la eliminacion de v
+     * @param s conjunto independiente a verificar
+     * @param v vertice eliminado
+     */
+    private void agregarVerticesEliminados(Grafica g, ArrayList<Vertice> s, Vertice v){
+
+        Vertice verticeActual;
+        for(int i = 0; i<g.vertices.size(); ++i){
+
+            //Si es el vertice 'v'
+            if(g.vertices.get(i).getNombreVertice().equals(v.getNombreVertice()))
+                continue;
+
+            verticeActual = g.vertices.get(i);
+
+            if(getVerticeConjunto(s, verticeActual.getNombreVertice()) != null && verticeActual.esVecino(v)){
+                Vertice verticeEnS = getVerticeConjunto(s, verticeActual.getNombreVertice());
+                verticeEnS.crearFlecha(v);
+            }    
+            
+        }
+
+    }
+
+    /**
+     * Devuelve el vertice dado el nombre en el conjunto independiente.
+     * 
+     * @param s conjunto independiente
+     * @param nombre nombre del vertice 
+     * @return el vertice buscado
+     */
+    private Vertice getVerticeConjunto(ArrayList<Vertice> s, String nombre){
+
+        for(int i = 0; i<s.size(); ++i){
+            if(s.get(i).getNombreVertice().equals(nombre))
+                return s.get(i);
+        }
+
+        return null;
+    }
+
 
 }
