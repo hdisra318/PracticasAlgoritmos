@@ -37,6 +37,8 @@ public class Main {
         SecCicOrd sco = new SecCicOrd(tamSCO);
         System.out.println("El ejemplar formado fue: "+ sco);
 
+        System.out.println("El indice del menor elemento es: "+sco.BusquedaBinariaCiclica());
 
+        System.out.println("La cantidad de operaciones elementales ejecutadas: "+sco.numOper);
     }
 }
