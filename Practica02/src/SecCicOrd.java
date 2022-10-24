@@ -43,14 +43,14 @@ public class SecCicOrd {
 
             double num;
 
-            //Para que el numero mas pequeno de la secuencia se encuentre entre 1-50
+            //Para que el numero mas pequeno de la secuencia se encuentre entre 1-10
             if(i == nuevoIndice){
-                num = Math.floor(Math.random() * 50);
+                num = Math.floor(Math.random() * 10);
             }else{
 
-                num = Math.floor(Math.random() * 100);
-                while(sco[i-1] > num){
-                    num = Math.floor(Math.random() * 100);
+                num = sco[i-1] + Math.floor(Math.random() * 10);
+                while(sco[i-1] >= num){
+                    num = sco[i-1] + Math.floor(Math.random() * 10);
                 }
 
             }
@@ -62,15 +62,15 @@ public class SecCicOrd {
         for(int i = 0; i<nuevoIndice; ++i){
             double num;
             if(i == 0){
-                num = Math.floor(Math.random() * 100);
-                while(sco[sco.length-1] > num){
-                    num = Math.floor(Math.random() * 100);
+                num = sco[sco.length-1] + Math.floor(Math.random() * 10);
+                while(sco[sco.length-1] >= num){
+                    num = sco[sco.length-1] + Math.floor(Math.random() * 10);
                 }
 
             }else {
-                num = Math.floor(Math.random() * 100);
-                while(sco[i-1] > num){
-                    num = Math.floor(Math.random() * 100);
+                num = Math.floor(Math.random() * 10);
+                while(sco[i-1] >= num){
+                    num = sco[i-1] + Math.floor(Math.random() * 10);
                 }
             }
 
@@ -108,7 +108,7 @@ public class SecCicOrd {
             return izq;
 
         //Operaciones de =, +, /
-        numOper += 2;
+        numOper += 3;
         int mitad = (int)((izq + der) / 2);
 
         //Comparacion <
@@ -117,6 +117,7 @@ public class SecCicOrd {
             return BusquedaBinariaCiclicaAux(izq, mitad);
         }else{
             //Operacion +
+            numOper++;
             return BusquedaBinariaCiclicaAux(mitad + 1, der);
         }
     }
