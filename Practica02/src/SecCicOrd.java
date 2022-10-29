@@ -15,7 +15,7 @@ public class SecCicOrd {
     public int numOper = 0;
 
     /**
-     * Define la secuencia
+     * Define la secuencia cilicamente ordenada
      * @param n tamanio de la secuencia
      */
     public SecCicOrd(int n){
@@ -30,22 +30,27 @@ public class SecCicOrd {
      */
     public void generaSCO(){
 
+        //Si el tamaño dado es 1
+        if(sco.length == 1){
+            sco[0] = (int)Math.floor(Math.random() * 100);
+            return;
+        }
+
 
         //Genera un indice aleatorio de donde empezara la secuencia (y que no sea el 0)
         int nuevoIndice = 0;
         while(nuevoIndice <= 0)
             nuevoIndice = (int)Math.floor(Math.random() * sco.length);
 
-        System.out.println(nuevoIndice);
 
         //Para generar numeros aleatorios de forma ascendente desde el indice aleatorio
         for(int i = nuevoIndice; i<sco.length; ++i){
 
             double num;
 
-            //Para que el numero mas pequeno de la secuencia se encuentre entre 1-10
+            //Para que el numero mas pequeno de la secuencia se encuentre entre 1-100
             if(i == nuevoIndice){
-                num = Math.floor(Math.random() * 10);
+                num = Math.floor(Math.random() * 100);
             }else{
 
                 num = sco[i-1] + Math.floor(Math.random() * 10);
@@ -55,7 +60,7 @@ public class SecCicOrd {
 
             }
             sco[i] = (int)num;
-            System.out.println(num);
+
         }
 
         //Para generar los numeros aleatorios de forma ascendente hasta el indice aleatorio
@@ -75,7 +80,6 @@ public class SecCicOrd {
             }
 
             sco[i] = (int)num;
-            System.out.println(num);
         }
         
 
@@ -123,8 +127,8 @@ public class SecCicOrd {
     }
 
     /**
-     * Regresa la secuencia ciclicamente ordenada genrada.
-     * @return la secuencia ciclicamente ordenada genrada
+     * Regresa la secuencia ciclicamente ordenada generada.
+     * @return la secuencia ciclicamente ordenada generada
      */
     public String toString(){
         String strSCO = "";
