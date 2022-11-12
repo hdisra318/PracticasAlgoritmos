@@ -10,7 +10,6 @@ import java.util.Scanner;
  * @version 1.0
  */
 public class Main {
-
     
     public static void main(String[] args) {
         
@@ -35,16 +34,22 @@ public class Main {
                 break;
             }catch(InputMismatchException ime){
                 System.out.println("\nIngresa un numero valido");
-                sc.nextLine();
             }
         }
 
         ZigZag secuencia = new ZigZag();
         secuencia.generaSecuenciaKZigZag(n, k);
 
-        System.out.println();
-        secuencia.localInsertionSort();
+        System.out.println("\n");
 
+        //Llamada a los algoritmos
+        secuencia.localInsertionSort();
+        secuencia.insertionSort();
+
+        //Impresion de las secuencias ordenadas y el numero de operaciones elementales
+        secuencia.printSecuencia();
+
+        
     }
 
 }

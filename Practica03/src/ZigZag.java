@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Practica 03: Ordenamientos
@@ -11,9 +12,14 @@ import java.util.ArrayList;
 public class ZigZag {
 
     /**
-     * Secuencia k-zig-zag
+     * Secuencia k-zig-zag para el algortimo Local Insertion Sort
      */
-    int[] kZigZag;
+    int[] kZigZagLIS;
+
+    /**
+     * Secuencia k-zig-zag para el algortimo Insertion Sort
+     */
+    int[] kZigZagIS;
 
     /**
      * Numero de operaciones elementales realizadas en el algoritmo 
@@ -26,9 +32,6 @@ public class ZigZag {
      * Insertion Sort
      */
     int numOperIS;
-
-
-
 
     /**
      * Crea una secuencia k-zig-zag
@@ -43,7 +46,7 @@ public class ZigZag {
             return;
         }
 
-        kZigZag = new int[n];
+        kZigZagLIS = new int[n];
 
         //Elemento al que se esta apuntando 
         int elem = ((int) n/2) + 1;
@@ -51,7 +54,7 @@ public class ZigZag {
 
         int i = 1, j = 1;
 
-        kZigZag[0] = elem;
+        kZigZagLIS[0] = elem;
 
         while(i<n){
 
@@ -63,7 +66,7 @@ public class ZigZag {
                     break;
                 }
 
-                kZigZag[i] = lastElemMax;
+                kZigZagLIS[i] = lastElemMax;
                 i++;
     
             }
@@ -76,7 +79,7 @@ public class ZigZag {
                     break;
                 }
 
-                kZigZag[i] = lastElemMin;
+                kZigZagLIS[i] = lastElemMin;
 
                 i++;
             }
@@ -86,12 +89,16 @@ public class ZigZag {
         }
 
         
-        for (int x : kZigZag) {
+        System.out.println("\n-> Secuencia "+k+"-zig-zag generada:");
+        for (int x : kZigZagLIS) {
             System.out.print(x + " ");
         }
 
-    }
+        System.out.println();
+        kZigZagIS = Arrays.copyOfRange(kZigZagLIS, 0, n);
 
+
+    }
 
 
     /**
@@ -105,26 +112,50 @@ public class ZigZag {
         //Apuntador a un elemento en l
         Integer ui; 
 
-        l.add(kZigZag[0]);
+        l.add(kZigZagLIS[0]);
+
+        /* Operacion de asignacion: = */
+        numOperLIS++;
         ui = l.get(0);
 
-        int n = kZigZag.length;
+        /* Operacion de asignacion: = */
+        numOperLIS++;
+        for(int i = 1; i<kZigZagLIS.length; i++){
+            /* Operaciones de: < y ++ (+, =) */
+            numOperLIS += 3;
 
-        for(int i = 1; i<n; i++){
+            /* Operacion de comparacion: < */
+            numOperLIS++;
+            if(ui.intValue() < kZigZagLIS[i]){
 
-            if(ui.intValue() < kZigZag[i]){
+                /* Operacion de asignacion: =  */
+                numOperLIS++;
                 //Insertar a la dereceha de ui
-                ui = insertaDerecha(ui, kZigZag[i], l);
+                ui = insertaDerecha(ui, kZigZagLIS[i], l);
+
             }else{
 
-                ui = insertaIzquierda(ui, kZigZag[i], l);
+                /* Operacion de asignacion: =  */
+                numOperLIS++;
+                ui = insertaIzquierda(ui, kZigZagLIS[i], l);
             }
 
         } 
 
-        for(int i = 0; i<l.size(); i++){
+        /* Operacion de asignacion: =  */
+        numOperLIS++;
+        int p = 0;
+        while(p<l.size()){
+            /* Operacion de comparacion: < */
+            numOperLIS++;
 
-            System.out.print(l.get(i)+" ");
+            /* Operacion de asignacion: = */
+            numOperLIS++;
+            kZigZagLIS[p] = l.get(p);
+
+            /* Operacion de incremento: ++ (+, =) */
+            numOperLIS += 2;
+            p++;
         }
 
     }
@@ -141,23 +172,42 @@ public class ZigZag {
      */
     private Integer insertaDerecha(Integer ui, int elem, ArrayList<Integer> l){
 
+        /* Operacion de asignacion: =  */
+        numOperLIS++;
         int pos = l.indexOf(ui);
 
+        /* Operacion de asignacion: =  */
+        numOperLIS++;
         //Indica si ya se agrego el numero a la lista
         boolean agregado = false;
 
+        /* Operacion de asignacion =  */
+        numOperLIS++;
         for(int i = pos; i<l.size(); i++){
+            /* Operaciones de < y ++ (+, =) */
+            numOperLIS += 3;
 
+            /* Operacion de comparacion: <= */
+            numOperLIS++;
             if(elem <= l.get(i)){
                 l.add(i, elem);
+
+                /* Operaciones de asignacion: = */
+                numOperLIS += 2;
                 ui = Integer.valueOf(elem);
                 agregado = true;
+
                 break;
             }
             
         }
 
+        /* Operacion de negacion: ! */
+        numOperLIS++;
         if(!agregado){
+            
+            /* Operacion de asignacion = */
+            numOperLIS++;
             l.add(l.size(), elem);
             ui = Integer.valueOf(elem);
         }
@@ -178,24 +228,43 @@ public class ZigZag {
      */
     private Integer insertaIzquierda(Integer ui, int elem, ArrayList<Integer> l){
 
+        /* Operacion de asignacion: = */
+        numOperLIS++;
         int pos = l.indexOf(ui);
 
+        /* Operacion de asignacion: = */
+        numOperLIS++;
         //Indica si ya se agrego el numero a la lista
         boolean agregado = false;
 
+         /* Operacion de asignacion: =  */
+         numOperLIS++;
         for(int i = pos; i>=0; i--){
+            /* Operaciones de >= y -- (-, =) */
+            numOperLIS += 3;
 
+            /* Operacion de comparacion: >= */
+            numOperLIS++;
             if(elem >= l.get(i)){
                 l.add(i, elem);
+
+                /* Operaciones de aignacion: = */
+                numOperLIS += 2;
                 ui = Integer.valueOf(elem);
                 agregado = true;
+
                 break;
             }
             
         }
 
+        /* Operacion de negacion: ! */
+        numOperLIS++;
         if(!agregado){
             l.add(0, elem);
+
+            /* Operacion de asignacion: = */
+            numOperLIS++;
             ui = Integer.valueOf(elem);
         }
 
@@ -211,15 +280,50 @@ public class ZigZag {
 
         int temp;
 
-        for(int i = 0; i<kZigZag.length; i++){
+        /* Operador de asignacion: = */
+        numOperIS++;
+        for(int i = 1; i<kZigZagIS.length; i++){
+            /* Operaciones de < y ++ (+, =) */
+            numOperIS += 3;
 
-            temp = kZigZag[i];
+            /* Operacion de asignacion: = */
+            numOperIS++;
+            temp = kZigZagIS[i];
 
-            for(int j = i; j>0 && kZigZag[j-1] > temp; j--){
-                kZigZag[j] = 
+            /* Operacion de asignacion = y resta - */
+            numOperIS += 2;
+            for(int j = i-1; j>=0 && kZigZagIS[j] > temp; j--){
+                /* Operaciones de >=, &&, > y -- (=, -) */
+                numOperIS += 5;
+                
+                /* Operaciones de asignacion = y suma + */
+                numOperIS += 3;
+                kZigZagIS[j+1] = kZigZagIS[j];
+                kZigZagIS[j] = temp;
             }
-
         }
+        
+    }
+
+
+    /**
+     * Imprime la secuencia ordenada con el numero de operaciones realizadas
+     * para cada algoritmo.
+     */
+    public void printSecuencia(){
+
+        System.out.println("- Secuencia ordenada por Local Insertion Sort:");
+        for(int i = 0; i<kZigZagLIS.length; ++i){
+            System.out.print(kZigZagLIS[i] + " ");
+        }
+        System.out.println("\nNumero de operaciones elementales realizadas: "+numOperLIS+"\n");
+
+        System.out.println("- Secuencia ordenada por Insertion Sort:");
+        for(int i = 0; i<kZigZagIS.length; ++i){
+            System.out.print(kZigZagIS[i] + " ");
+        }
+        System.out.println("\nNumero de operaciones elementales realizadas: "+numOperIS+"\n");
+
     }
 
 }
