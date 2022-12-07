@@ -42,23 +42,24 @@ public class Main {
             }
 
             /* Leyendo las aristas del archivo para la grafica */
-            String flecha;
+            String arista;
             while(sc.hasNext()){
 
-                flecha = sc.nextLine();
+                arista = sc.nextLine();
                 
                 //Eliminando los espacios al final de la oracion (si los hay)
-                flecha = flecha.trim();
-                String arregloFlecha[] = flecha.split(",");
+                arista = arista.trim();
+                String arregloArista[] = arista.split(",");
 
-                Vertice vOrigen = grafica.getVertice(arregloFlecha[0]);
-                Vertice vDestino = grafica.getVertice(arregloFlecha[1]);
+                Vertice vOrigen = grafica.getVertice(arregloArista[0]);
+                Vertice vDestino = grafica.getVertice(arregloArista[1]);
+                int peso = Integer.parseInt(arregloArista[2]);
 
                 if(vDestino == null && vOrigen == null)
                     continue;
 
-                //Agregando las flechas leidas del archivo
-                grafica.agregarFlecha(vOrigen, vDestino);
+                //Agregando las aristas leidas del archivo
+                grafica.agregarArista(vOrigen, vDestino, peso);
                     
             }
 
@@ -87,8 +88,12 @@ public class Main {
         Main.rutaArchivo = rutaArchivo;
         Grafica grafica = Main.creaGrafica();
 
-        //Impresion del conjunto independiente
-        System.out.println("Conjunto Independiente = "+grafica.conjIndepTeor());
+        //Impresion del peso del arbol generador de peso minimo y las aristas que lo componen.
+        System.out.println("Peso del arbol generador de peso minimo = "+grafica.kruskal());
+        System.out.println("Aristas que componen al arbol generador de peso minimo:");
+        for(int i = 0; i<grafica.aristasArbol.size(); ++i){
+            System.out.println(grafica.aristasArbol.get(i).toString());
+        }
 
         lecturaConsol.close();
     }

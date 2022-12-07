@@ -84,17 +84,6 @@ public class Vertice {
     }
 
     /**
-     * Crea una arista hacia el vertice dado.
-     * 
-     * @param verticeDestino vertice al que llega la arista
-     */
-    public void crearArista(Vertice verticeDestino){
-        this.setVecino(verticeDestino);
-        verticeDestino.setVecino(this);
-
-    }
-
-    /**
      * Verifica si el vertice dado es vecino del vertice actual.
      * 
      * @param vertice el vertice a verificar

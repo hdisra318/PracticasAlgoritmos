@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 /**
  * Practica 04: Clase Grafica 
@@ -10,6 +12,15 @@ public class Grafica {
 
     /** Lista de vertices de la grafica */
     ArrayList<Vertice> vertices = new ArrayList<>();
+
+    /** Lista de aristas de la grafica */
+    ArrayList<Arista> aristas = new ArrayList<>();
+
+    /** Conjuntos Ajeno */
+    ArrayList<ArrayList<Vertice>> disjointSets = new ArrayList<>();
+
+    /** Lista de aristas del arbol de peso minimo */
+    ArrayList<Arista> aristasArbol = new ArrayList<>();
 
     /**
      * Constructor vacio de una grafica.
@@ -39,12 +50,13 @@ public class Grafica {
      * 
      * @param verticeOrigen el vertice de un extremo
      * @param verticeDestino el vertice del otro extremo
+     * @param peso el peso de la arista
      */
-    public void agregarFlecha(Vertice verticeOrigen, Vertice verticeDestino){
+    public void agregarArista(Vertice verticeOrigen, Vertice verticeDestino, int peso){
 
         if(existeVertice(verticeOrigen) && existeVertice(verticeDestino)){
-           
-            verticeOrigen.crearArista(verticeDestino);
+
+            this.aristas.add(new Arista(verticeOrigen, verticeDestino, peso));
         }
     }
 
@@ -82,6 +94,7 @@ public class Grafica {
         return v;
     }
 
+
     @Override
     public String toString(){
 
@@ -117,33 +130,133 @@ public class Grafica {
         }
     }
 
+
     /**
-     * Agrega las adyacencias que estaban con el vertice v.
+     * Algoritmo de Kruskal.
      * 
-     * @param g grafica anterior a la eliminacion de v
-     * @param s conjunto independiente a verificar
-     * @param v vertice eliminado
+     * @return el peso del arbol generador de peso minimo
      */
-    private void agregarVerticesEliminados(Grafica g, ArrayList<Vertice> s, Vertice v){
+    public int kruskal(){
 
-        Vertice verticeActual;
-        for(int i = 0; i<g.vertices.size(); ++i){
 
-            //Si es el vertice 'v'
-            if(g.vertices.get(i).getNombreVertice().equals(v.getNombreVertice()))
-                continue;
+        // Cola de Prioridades que ordena las aristas segun su peso
+        PriorityQueue<Arista> queue = new PriorityQueue<>(aristas.size(), new Comparator<Arista>() {
+            // El minimo es el de mayor prioridad
+            public int compare(Arista e1, Arista e2){
+                if(e1.peso < e2.peso) return -1;
+                if(e1.equals(e2)) return 0;
+                return 1;
+            }
+        });
 
-            verticeActual = g.vertices.get(i);
+        // Vertices auxiliares
+        Vertice v, v_i, v_f;
 
-            if(getVerticeConjunto(s, verticeActual.getNombreVertice()) != null && verticeActual.esVecino(v)){
-                Vertice verticeEnS = getVerticeConjunto(s, verticeActual.getNombreVertice());
-                verticeEnS.crearFlecha(v);
-            }    
-            
+        // Arista auxiliar
+        Arista e;
+
+        // Peso del arbol generador de peso minimo
+        int pesoArbol = 0;
+
+        
+        ArrayList<Vertice> set1, set2;
+
+
+        // Tomando al primer vertice
+        v = this.vertices.get(0);
+        int i = 1;
+        while(v != null){
+            // Creacion de conjunto ajeno con representante v
+            this.creaConjunto(v);
+
+            v = this.vertices.get(i);
+            i++;
         }
 
+        // Tomando la primer arista
+        e = this.aristas.get(0);
+        int llave;
+        int j = 1;
+        
+        while(e != null){
+            
+            llave = e.peso;
+            queue.add(e);
+            e = this.aristas.get(j);
+            j++;
+        }
+
+
+        while(!queue.isEmpty()){
+            e = queue.poll();
+            v_i = e.v1;
+            v_f = e.v2;
+            set1 = this.find(v_i);
+            set2 = this.find(v_f);
+
+            if(!set1.equals(set2)){
+                this.union(set1, set2);
+                pesoArbol += e.peso;
+                aristasArbol.add(e);
+            }
+
+        }
+
+        return pesoArbol;
     }
 
 
+    /**
+     * Crea un conjunto ajeno dado el representante.
+     * 
+     * @param rep representante del conjunto ajeno
+     */
+    private void creaConjunto(Vertice rep){
+
+        ArrayList<Vertice> set = new ArrayList<>();
+        set.add(rep);
+        disjointSets.add(set);
+
+    }
+
+    /**
+     * Encuentra el conjunto ajeno dado un vertice
+     * 
+     * @param vertice el vertice a buscar en un conjunto ajeno
+     * @return el conjunto ajeno donde se encuentra el vertice
+     */
+    private ArrayList<Vertice> find(Vertice vertice){
+
+        ArrayList<Vertice> set = null;
+
+        boolean found = false;
+        for(int i = 0; i < disjointSets.size(); i++){
+
+            for(int j = 0; j < disjointSets.get(i).size(); ++j){
+
+                if(vertice.equals(disjointSets.get(i).get(j))){
+                    found = true;
+                    set = disjointSets.get(i);
+                }
+            }
+
+            if(found)
+                break;
+        }
+
+        return set;
+
+    }
+
+    /**
+     * Une dos conjuntos ajenos
+     * 
+     * @param set1 conjunto ajeno a unir
+     * @param set2 conjunto ajeno a unir
+     */
+    private void union(ArrayList<Vertice> set1, ArrayList<Vertice> set2){
+
+        // El nuevo conjunto estara en la posicion mas pequeña y la otra se borrara
+    }
 
 }
