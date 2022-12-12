@@ -22,7 +22,6 @@ public class Vertice {
     public Vertice(String nombreVertice){
         this.nombreVertice = nombreVertice;
         this.vecinos = new ArrayList<>();
-        this.vecinos.add(this);//Cada vertice es vecino de si mismo
     }
 
     /**
@@ -47,8 +46,8 @@ public class Vertice {
      */
     public String represetacionConexiones(){
         String representacion = "";
-        //Iterando sobre los vecinos excepto consigo mismo
-        for (int i = 1; i<vecinos.size(); ++i) {
+        //Iterando sobre los vecinos
+        for (int i = 0; i<vecinos.size(); ++i) {
             representacion += this + " --- " + vecinos.get(i);
         }
 

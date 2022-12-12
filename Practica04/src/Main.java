@@ -88,6 +88,7 @@ public class Main {
         Main.rutaArchivo = rutaArchivo;
         Grafica grafica = Main.creaGrafica();
 
+        System.out.println("La aristas de la grafica son: \n"+grafica.toString());
         //Impresion del peso del arbol generador de peso minimo y las aristas que lo componen.
         System.out.println("Peso del arbol generador de peso minimo = "+grafica.kruskal());
         System.out.println("Aristas que componen al arbol generador de peso minimo:");

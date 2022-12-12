@@ -34,7 +34,7 @@ public class Arista {
     @Override
     public String toString() {
         
-        return v1.toString() + " --- " + v2.toString();
+        return v1.toString() + " --- " + v2.toString() + "\t <- Peso: "+this.peso;
     }
 
 

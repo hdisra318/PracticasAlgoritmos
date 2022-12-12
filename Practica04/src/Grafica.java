@@ -108,36 +108,12 @@ public class Grafica {
         return representacion;
     }
 
-
-
-    
-    /**
-     * Remueve las aparciones de 'v' en las vecindades de los vertices
-     * de la grafica.
-     * 
-     * @param v vertice a verificar
-     */
-    private void removerVecinosDeVertices(Vertice v){
-        for(int i = 0; i<this.vertices.size(); ++i){
-            for(int j = 0; j<this.vertices.get(i).getGrado(); ++j){
-                for(int k = 0; k<v.getGrado(); ++k){
-                    if(this.vertices.get(i).getVecinos().get(j).getNombreVertice().equals(v.getVecinos().get(k).getNombreVertice())){
-                        this.vertices.get(i).eliminarVecino(v.getVecinos().get(k));
-                        j--;
-                    }
-                }
-            }
-        }
-    }
-
-
     /**
      * Algoritmo de Kruskal.
      * 
      * @return el peso del arbol generador de peso minimo
      */
     public int kruskal(){
-
 
         // Cola de Prioridades que ordena las aristas segun su peso
         PriorityQueue<Arista> queue = new PriorityQueue<>(aristas.size(), new Comparator<Arista>() {
@@ -161,34 +137,28 @@ public class Grafica {
         
         ArrayList<Vertice> set1, set2;
 
-
-        // Tomando al primer vertice
-        v = this.vertices.get(0);
-        int i = 1;
-        while(v != null){
+        int i = 0;
+        while(i<vertices.size()){
             // Creacion de conjunto ajeno con representante v
-            this.creaConjunto(v);
-
             v = this.vertices.get(i);
+            this.creaConjunto(v);
             i++;
         }
 
-        // Tomando la primer arista
-        e = this.aristas.get(0);
-        int llave;
-        int j = 1;
+        int j = 0;
         
-        while(e != null){
+        while(j < aristas.size()){
             
-            llave = e.peso;
-            queue.add(e);
             e = this.aristas.get(j);
+            
+            if(!queue.contains(e))// Para no agregar doble vez a la arista
+                queue.add(e);
             j++;
         }
 
 
         while(!queue.isEmpty()){
-            e = queue.poll();
+            e = queue.remove();
             v_i = e.v1;
             v_f = e.v2;
             set1 = this.find(v_i);
@@ -234,7 +204,7 @@ public class Grafica {
 
             for(int j = 0; j < disjointSets.get(i).size(); ++j){
 
-                if(vertice.equals(disjointSets.get(i).get(j))){
+                if(vertice.getNombreVertice().equals(disjointSets.get(i).get(j).getNombreVertice())){
                     found = true;
                     set = disjointSets.get(i);
                 }
@@ -256,7 +226,40 @@ public class Grafica {
      */
     private void union(ArrayList<Vertice> set1, ArrayList<Vertice> set2){
 
-        // El nuevo conjunto estara en la posicion mas pequeña y la otra se borrara
+        int indiceSet1 = 0, indiceSet2 = 0;
+
+        //Encuentra al menor indice entre los dos
+        for(int i = 0; i<disjointSets.size(); ++i){
+            if(set1.equals(disjointSets.get(i)))
+                indiceSet1 = i;
+
+            if(set2.equals(disjointSets.get(i)))
+                indiceSet2 = i;
+        }
+        int nuevoIndice, viejoIndice;
+        if(indiceSet1<indiceSet2){
+            nuevoIndice = indiceSet1;
+            viejoIndice = indiceSet2;
+        }else{
+            nuevoIndice = indiceSet2;
+            viejoIndice = indiceSet1;
+        }
+
+        //Nuevo conjunto ajeno
+        ArrayList<Vertice> nuevoConjAjeno = new ArrayList<>();
+
+        for(int i = 0; i<set1.size(); ++i){
+            nuevoConjAjeno.add(set1.get(i));
+        }
+        
+        for(int i = 0; i<set2.size(); ++i){
+            nuevoConjAjeno.add(set2.get(i));
+        }
+
+        disjointSets.set(nuevoIndice, nuevoConjAjeno);
+        disjointSets.remove(viejoIndice);
+        
+
     }
 
 }
